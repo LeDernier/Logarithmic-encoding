@@ -1,37 +1,11 @@
 # Imports non Qiskit
 import random
-import sys
 import numpy as np
-from numpy import pi
 import matplotlib.pyplot as plt
 import networkx as nx
-# optimizers
-from scipy.optimize import minimize
 
-### AUXILIARY FUNCTIONS ###
-
-def get_weight_matrix(G):
-    """
-    :param G: nx.Graph: a fully connected graph with the random assigned weights
-    :return: numpy array: a matrix containing weights of edges
-    """
-    matrix = []
-    for i in range(len(G)):
-        row = []
-        for j in range(len(G)):
-            if j != i:
-                row.append(G._adj[i][j]['weight'])
-            else:
-                row.append(0)
-        matrix.append(row)
-    return np.array(matrix)
-
-def get_adjacency_matrix(G):
-    return np.array(nx.adjacency_matrix(G).todense())
-
-def get_laplacian_matrix(G):
-    return np.array(nx.laplacian_matrix(G).todense())
-
+# custom modules
+from graph_functions import get_laplacian_matrix
 
 ### 1. GENERATE RANDOM INSTANCE ###
 seed = 123
