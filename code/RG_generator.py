@@ -61,9 +61,9 @@ if __name__ == '__main__':
     # quick test of the random generator
 
     seed = 123
-    list_num_nodes = [4,8,16,32]               # number of variables/nodes
-    w_min = -5          # minimum weight    
-    w_max = 5          # maximum weight
+    list_num_nodes = [4,8,16]               # number of variables/nodes
+    w_min = 0          # minimum weight    
+    w_max = 10          # maximum weight
     num_inst = 1        # number of instances to test
     suffix_name = ""
 
