@@ -69,7 +69,7 @@ def Rf_map(theta, m=None, q=0, R_f=None):
     if m is None:
         m = len(theta)
 
-    R_f = np.zeros(theta.shape)
+    R_f = np.zeros(m)
 
     x_0 = np.arcsin(np.log(-np.log(0.5))/2**m)
     
@@ -129,7 +129,7 @@ def parameterizedCircuit(k, U_diag):
         #plt.show()
         return qc_init_state
 
-def getExpectedValue(psi, op, method = "snapshot", shots=1024, verbose=False):
+def getExpectedValue(psi, op, backend = None, method = "snapshot", shots=1024, verbose=False):
     """
         Calculate <psi|op|psi>
         ----------
@@ -138,8 +138,7 @@ def getExpectedValue(psi, op, method = "snapshot", shots=1024, verbose=False):
         - op: observable (Hermitian matrix)
     """
     
-    # define your backend or quantum instance
-    backend = Aer.get_backend('qasm_simulator') 
+    # define the quantum instance
     q_instance = QuantumInstance(backend, shots=shots)
 
     # define the state to sample
@@ -163,7 +162,7 @@ def getExpectedValue(psi, op, method = "snapshot", shots=1024, verbose=False):
     return exp_val
 
 
-def getBindingEnergy(psi, H, U, method = "snapshot", shots=512, verbose=False):
+def getBindingEnergy(psi, H, U, backend = None, method = "snapshot", shots=512, verbose=False):
     """
         Calculates <+|H*U|psi>.
 
@@ -195,8 +194,7 @@ def getBindingEnergy(psi, H, U, method = "snapshot", shots=512, verbose=False):
     pauli_op = SparsePauliOp.from_operator(Q_)
     op = PauliSumOp(pauli_op)
     
-    # define your backend or quantum instance
-    backend = Aer.get_backend('qasm_simulator') 
+    # quantum instance
     q_instance = QuantumInstance(backend, shots=shots)
 
     # define the state to sample
@@ -240,6 +238,9 @@ def getExpectation(H, k, method="sampled", shots=512, verbose=False, R_mapping =
             'Rc' for the continuous map given in the paper: 2*exp(-exp(2^(m-q)*sin(2^q*x + x_0))) - 1
             'Rcs' for a custom continuous map using a sigmoid: 2*sigmoid(m*(x-pi)) - 1
     """
+
+    # backend
+    backend = Aer.get_backend('qasm_simulator') 
     
 
     ## decomposition of the Hamilonien in Pauli strings
@@ -265,7 +266,7 @@ def getExpectation(H, k, method="sampled", shots=512, verbose=False, R_mapping =
         # convert to a state
         qc_init_state = parameterizedCircuit(k, U_diag)
         psi = CircuitStateFn(qc_init_state)
-        expected_value = getExpectedValue(psi, op, method=method,verbose=verbose)
+        expected_value = getExpectedValue(psi, op, backend=backend, method=method,verbose=verbose)
 
         if sum_H != 0:  # necessary condition
             ## calculations for (1/2^(k-1))*<+|H*U|+>   (simplest method)
@@ -275,10 +276,33 @@ def getExpectation(H, k, method="sampled", shots=512, verbose=False, R_mapping =
             qc_ones = QuantumCircuit(qr)
             qc_ones.h(range(k))
             psi_ones = CircuitStateFn(qc_ones)
-            expected_value_offdiag = getBindingEnergy(psi_ones, H, U_matrix, method=method, shots=shots, verbose=verbose)
+            expected_value_offdiag = getBindingEnergy(psi_ones, H, U_matrix, backend=backend, method=method, shots=shots, verbose=verbose)
             expected_value += 2*expected_value_offdiag
             expected_value += sum_H/4
 
         return expected_value
     
     return parameterizedExpectation
+
+
+##### FUNCTIONS TO PERFORM THE TESTS ##########
+
+
+def get_max_depth(operator_list):
+    max_state_prep_detph, max_total_depth = None, None
+
+    try:
+        operator_circ = operator_list.to_circuit_op()   # replacing the quantum states by circuits
+        circuits = []
+        for op in operator_circ.oplist:
+            circuits.append(op)
+
+
+        max_total_depth = max([circ.primitive.decompose(reps=5) for circ in circuits])          # we decompose it to expand the "state preparation" gate
+        max_state_prep_detph = max_total_depth - max([circ.primitive for circ in circuits])
+    except:
+        pass
+
+    return max_state_prep_detph, max_total_depth
+
+    

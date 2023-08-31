@@ -24,9 +24,26 @@ def get_adjacency_matrix(G):
     return np.array(nx.adjacency_matrix(G).todense())
 
 def get_laplacian_matrix(G):
-    return np.array(nx.laplacian_matrix(G).todense())
+    laplacian = np.array(nx.laplacian_matrix(G).todense())
+    return laplacian
 
+def correct_dims(matrix):
+    """
+        Correct the dimensions of a matrix so that it is of the form 
+        2**m for some integer m.
+    """
+    N = matrix.shape[0]
+    m = np.log2(N)
+    N_ceil = 2**int(np.ceil(m))
 
+    if N_ceil > N:
+        new_matrix = np.zeros((N_ceil, N_ceil))
+        new_matrix[:N,:N] = matrix
+        return new_matrix
+
+    else:
+        return matrix
+    
 def readGraph(file):
     """ 
         Read a graph instance from a file '.col'.

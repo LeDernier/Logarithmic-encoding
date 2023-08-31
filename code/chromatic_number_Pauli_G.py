@@ -93,12 +93,20 @@ def get_minimum_number_of_colors(G, n:int):
                 color_group.append((c,v))
 
     return obj_val, color_group
+
+
+def get_maximal_cliques(G:nx.Graph):
+    return nx.find_cliques(G)
+
+def get_clique_number(G:nx.Graph):
+    return nx.graph_clique_number(G)
+
         
 
 if __name__  == '__main__':
     n = 2
     G = create_Pauli_graph(n)
-    #chromatic_num = get_chromatic_number(G)
+    """ #chromatic_num = get_chromatic_number(G)
     chromatic_num, coloring = get_minimum_number_of_colors(G,n)
     print(f"chromatic number for {n} qubits: ", chromatic_num)
     print("coloring: ", coloring)
@@ -125,7 +133,20 @@ if __name__  == '__main__':
     #nx.draw_networkx_edge_labels(G, pos)
 
     nx.draw_circular(G, with_labels=True, node_color=color_map)
-    plt.show()
+    plt.show() """
+
+    clique_number = get_clique_number(G)
+    maximal_cliques = get_maximal_cliques(G)
+
+    print("maximal_cliques:")
+    count_cliques = 0
+    for clique in maximal_cliques:
+        if len(clique) == clique_number:
+            count_cliques += 1
+        print(clique)
+
+    print("clique_number: ", clique_number)
+    print("number of maximum cliques: ", count_cliques)
 
             
 
