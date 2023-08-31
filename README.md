@@ -1,8 +1,8 @@
 # Logarithmic-encoding
 This repository will contain the code developped during the project on Quantum Logarithmic Encoding at UMA.
 ## Reports
-Initial long report (mainly theoretical) on Overleaf (visualization only): https://fr.overleaf.com/read/ymgzyfphgdzb
-Final report (main theoretical results and tests) (visualization only): https://fr.overleaf.com/read/nvhgnmzjmzvm
+1. Initial long report (mainly theoretical) on Overleaf (visualization only): https://fr.overleaf.com/read/ymgzyfphgdzb
+2. Final report (main theoretical results and tests) (visualization only): https://fr.overleaf.com/read/nvhgnmzjmzvm
 
 # Packages used
 
