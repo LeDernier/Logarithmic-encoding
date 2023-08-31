@@ -19,7 +19,5 @@ This repository will contain the code developped during the project on Quantum L
 ## Custom packages
 
 - dense_ev 2023.5.22. This version was modified to avoid the usage of qiskit.optflow (deprecated package of Qiskit). This was with the objective of running the tests in a real quantum device in the future. This modified version is available at: https://github.com/LeDernier/dense-ev. The original package is available at: https://github.com/atlytle/dense-ev.
-- graph_functions
-- expectation_functions
-
-The last two "packages" are Python files located in the folder code of this repository.
+- graph_functions.py (located in the folder "code")
+- expectation_functions (located in the folder "code")
